@@ -1,0 +1,74 @@
+<head>
+    <script src="open.js"></script>
+
+    <style>
+      :root {
+	--size-div: 3;
+	--page-width: 200px;
+	--page-height: 100px;
+}
+body {
+	margin: 0 0;
+	background: pink;
+	font-family: "Dancing  Script", cursive;
+	font-size: calc(8.3px * var(--size-div));
+}
+.letter {
+	display: grid;
+	place-items: center;
+	width: 100%;
+	position: absolute;
+	height: 100%;
+	vertical-align: middle;
+	justify-content: center;
+}
+.increment:hover {
+	--size-div: 3.1;
+}
+
+.letter .page {
+	background: rgb(255, 237, 237);
+	width: calc(var(--page-width) * var(--size-div));
+	height: calc(var(--page-height) * var(--size-div));
+	margin: auto;
+	border-radius: calc(6.3px * var(--size-div));
+	box-shadow: calc(5.3px * --size-div) calc(6.3px * var(--size-div)) #888888;
+}
+
+.arrow-down {
+	width: 0;
+	height: 0;
+	border-left: calc(100px * var(--size-div)) solid transparent;
+	border-right: calc(100px * var(--size-div)) solid transparent;
+	border-radius: calc(3.3px * var(--size-div));
+	border-top: calc(60px * var(--size-div)) solid #ffd4fa;
+}
+
+#content {
+	display: none;
+	text-align: middle;
+	font-size: calc(5.2px * var(--size-div));
+	margin: 10px 10px;
+}
+#name {
+	padding: calc(26px * var(--size-div)) calc(7px * 3);
+	user-select: none;
+}
+
+    </style>
+  </head>
+  
+<script src="open.js"></script>
+<div class="letter" onclick="display_letter()">
+	<div class="page increment" id="base">
+		<div class="arrow-down"></div>
+		<div id="name">To my baby   </div>
+		<div id="content">Happy new year,
+			 may all your dreams come true and may you have a year filled with joy and laughter. You have brought so much joy and love into my life, and I am so grateful to have you in my life. I miss your scent, your loving touch, and your drop dead gorgeous smile. Every moment we're apart feels like an eternity. Every night I  dream about you and I wish I could live in the dream forever. I understand if you don't feel the same way, but I just want to know if you could give us another chance. Or at least, give me the chance to flirt with you. I don’t want to puzzle you so just tell me what you think. One more time, happy new year. The song below is Marriage d’amour, enjoy ;)
+            <video width="500" height="220" controls>
+                <source src="C:\Users\Admin\Documents\test\music4u.mp4" type="video/mp4">
+              </video>
+        </div>
+        
+	</div>
+</div>
