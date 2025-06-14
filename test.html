@@ -1,74 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <script src="open.js"></script>
+  <meta charset="UTF-8">
+  <title>Lợn đi tìm Bông Hoa</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background-color: #fdf6f0;
+    }
+    #game {
+      display: grid;
+      grid-template-columns: repeat(5, 60px);
+      grid-template-rows: repeat(5, 60px);
+      gap: 5px;
+      margin: 40px auto;
+      width: max-content;
+    }
+    .cell {
+      width: 60px;
+      height: 60px;
+      background-color: #fff;
+      border: 1px solid #ccc;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      text-align: center;
+      padding: 2px;
+    }
+    .pig {
+      background-color: #ffb6c1;
+    }
+    .flower {
+      background-color: #c1ffc1;
+    }
+    .obstacle {
+      background-color: #f8d7da;
+    }
+    .gift {
+      background-color: #d4f4fa;
+      color: #333;
+    }
+    #message {
+      margin-top: 20px;
+      font-size: 18px;
+      color: #d15f5f;
+    }
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  </style>
+</head>
+<body>
+  <h1>Lợn đi tìm Bông Hoa 🌸🐷</h1>
+  <div id="game"></div>
+  <div id="message"></div>
 
-    <style>
-      :root {
-	--size-div: 3;
-	--page-width: 200px;
-	--page-height: 100px;
-}
-body {
-	margin: 0 0;
-	background: pink;
-	font-family: "Dancing  Script", cursive;
-	font-size: calc(8.3px * var(--size-div));
-}
-.letter {
-	display: grid;
-	place-items: center;
-	width: 100%;
-	position: absolute;
-	height: 100%;
-	vertical-align: middle;
-	justify-content: center;
-}
-.increment:hover {
-	--size-div: 3.1;
-}
+  <script>
+    const gridSize = 5;
+    const game = document.getElementById("game");
+    const message = document.getElementById("message");
 
-.letter .page {
-	background: rgb(255, 237, 237);
-	width: calc(var(--page-width) * var(--size-div));
-	height: calc(var(--page-height) * var(--size-div));
-	margin: auto;
-	border-radius: calc(6.3px * var(--size-div));
-	box-shadow: calc(5.3px * --size-div) calc(6.3px * var(--size-div)) #888888;
-}
+    const grid = [];
+    for (let i = 0; i < gridSize * gridSize; i++) {
+      const cell = document.createElement("div");
+      cell.className = "cell";
+      grid.push(cell);
+      game.appendChild(cell);
+    }
 
-.arrow-down {
-	width: 0;
-	height: 0;
-	border-left: calc(100px * var(--size-div)) solid transparent;
-	border-right: calc(100px * var(--size-div)) solid transparent;
-	border-radius: calc(3.3px * var(--size-div));
-	border-top: calc(60px * var(--size-div)) solid #ffd4fa;
-}
+    let pigPos = 0;
+    const flowerPos = gridSize * gridSize - 1;
+    const obstacles = [6, 12, 17];
+    const obstacleTexts = {
+      6: "Block\nLợn EQ thấp",
+      12: "Ghost\nLợn ngoo luốn",
+      17: "Silent Treatment\n1 tuần Lợn bíu"
+    };
 
-#content {
-	display: none;
-	text-align: middle;
-	font-size: calc(5.2px * var(--size-div));
-	margin: 10px 10px;
-}
-#name {
-	padding: calc(26px * var(--size-div)) calc(7px * 3);
-	user-select: none;
-}
+    const gifts = [2, 10, 14];
+    const giftTexts = {
+      2: "Tát lợn bíu 1 cái",
+      10: "Gõ lợn ngu 1 cái",
+      14: "Ăn bún chả cùng lợn"
+    };
+    const giftMessages = {
+      2: "Tát bao nhiêu cái cũng được, nhưng miễn là vẫn yêu thương Lợn lắm!",
+      10: "2. Gõ nhẹ thôi, Lợn yếu đuối tổn thương cần Pông xoa nhẹ nhàng á!",
+      14: "Đừng giận Lợn nữa, rồi hướng dẫn Lợn mua thịt thà để còn chuẩn bị bún chả cho Pông ngày mai nữa chứuuuuu"
+    };
 
-    </style>
-  </head>
-  
-<script src="open.js"></script>
-<div class="letter" onclick="display_letter()">
-	<div class="page increment" id="base">
-		<div class="arrow-down"></div>
-		<div id="name">To Pông nhỏ xinhhhhh 🌼🌸🌺🌻  </div>
-		<div id="content" style="font-family:verdana;">Chúc mừng sinh nhật tuổi 18( lần thứ 10) Pông nhỏ xíu nha. Mong cậu tuổi mới vẫn luôn luôn xinh tươi như 🌼🌸🌺🌻, thực hiện được những mong muốn của bản thân. Mong rằng sang tuổi mới cậu sẽ cho tớ
-			được tặng cậu hoa thật, quà thật chứ không còn là những tấm thiệp online như này nhá há há. Có quà online là bài hát này cho cậu =)))) Còn quà thật thì gặp tớ để lấy nhé ;)
-            <video width="500" height="220" controls>
-                <source src="myvideo.MOV" type="video/mp4">
-              </video>
-        </div>
-        
-	</div>
-</div>
+    const apologyMessages = [
+      "Lợn biết mình đã sai nên đừng ghét lợn nữa nha, tớ sẽ hát bù cho Chou bao nhiêu bài hát cũng được hết nháaa",
+      "Lợn rất nhớ Pông nhỏ đáng iu, cute. Chou đáng sợ tạm đi được không ạ",
+      "Lợn sẽ tự oánh bản thân cho chừa, tuỳ Pông chọn",
+      "Pông nhỏ xinh iu tuyệt vời, đừng khó chịu Lợn nữa để mai tụi mình gặp nhau vui ơi là vui"
+    ];
+
+    function render() {
+      grid.forEach((cell, i) => {
+        cell.className = "cell";
+        cell.innerHTML = "";
+        if (obstacles.includes(i)) {
+          cell.classList.add("obstacle");
+          cell.textContent = obstacleTexts[i] || "💔";
+        }
+        if (gifts.includes(i)) {
+          cell.classList.add("gift");
+          cell.textContent = giftTexts[i];
+        }
+        if (i === pigPos) {
+          cell.classList.add("pig");
+          cell.innerHTML = '<img src="pig.png" alt="Pig">';
+        }
+        if (i === flowerPos) {
+          cell.classList.add("flower");
+          cell.innerHTML = '<img src="pong.png" alt="Flower">';
+        }
+      });
+    }
+
+    function showMessage(isBlocked = false, steppedOnGift = null) {
+      if (pigPos === flowerPos) {
+        message.textContent = "Lợn đã đến bên Pông nhỏ rồi! Đồng nghĩa Chou đã tha thứ cho Lợn, Lợn cảm ơn và mong ngóng gặp Chou ngày mai 💖";
+      } else if (steppedOnGift !== null && giftMessages[steppedOnGift]) {
+        message.textContent = giftMessages[steppedOnGift];
+      } else if (isBlocked) {
+        const msg = apologyMessages[Math.floor(Math.random() * apologyMessages.length)];
+        message.textContent = msg;
+      } else {
+        message.textContent = "";
+      }
+    }
+
+    document.addEventListener("keydown", (e) => {
+      if (pigPos === flowerPos) return;
+      let newPigPos = pigPos;
+      const row = Math.floor(pigPos / gridSize);
+      const col = pigPos % gridSize;
+      if (e.key === "ArrowRight" && col < gridSize - 1) newPigPos++;
+      else if (e.key === "ArrowLeft" && col > 0) newPigPos--;
+      else if (e.key === "ArrowUp" && row > 0) newPigPos -= gridSize;
+      else if (e.key === "ArrowDown" && row < gridSize - 1) newPigPos += gridSize;
+
+      if (!obstacles.includes(newPigPos)) {
+        pigPos = newPigPos;
+        render();
+        showMessage(false, newPigPos);
+      } else {
+        render();
+        showMessage(true);
+      }
+    });
+
+    render();
+  </script>
+</body>
+</html>
+
+
+
